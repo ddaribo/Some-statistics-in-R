@@ -1,0 +1,62 @@
+﻿# четене на данните
+
+> library(readxl)
+> sports <- read_excel("sports.xlsx")
+> View(sports) 
+
+# разпределение на участниците по пол:
+
+> tt <- table(sports$gender)
+> round(prop.table(tt)*100)
+
+# разпределение на попълнилите анкетата по възраст:
+
+> hist(sports$age, xlab = "age", ylab = "percentage", main = "Histogram of age", col=rainbow(6), prob=T)
+> rug(jitter(sports$age))
+
+> sd(sports$age)
+
+> summary(sports$age)
+
+# брой на нетрениращите
+> length(which(sports$training_frequency == 0))
+
+# визуализация на честота на спортуването
+
+> tt2 <- table(sports$training_frequency)
+> barplot(prop.table(tt2), col = rainbow(7))
+
+#разпределение на видовете спорт
+
+> sports.table <- table(sports$sport)
+> sports.table
+
+# честота на тренировките според възрастта
+
+> plot(sports$age, sports$training_frequency, xlab = "Age", ylab = "Training days/week")
+> abline(v = median(sports$age), col="red")
+
+# изследваме корелацията между двете променливи по метода на Pearson:
+
+> round(cor(sports$age, sports$training_frequency, method = "pearson"), 2)
+
+# сега и по методите на Spearman и Keндал:
+
+> round(cor(sports$age, sports$training_frequency, method = "spearman"), 2)
+> round(cor(sports$age, sports$training_frequency, method = "kendall"), 2)
+
+# Честота на трениране според спорта
+# първо махаме неспортуващите и избираме само категориите, различни от „други“ :
+
+> valid_categories <- sports[which(sports$sport != "other" & sports$sport != "none"),]
+> boxplot(valid_categories$training_frequency ~ valid_categories$sport, las=2, ylab="trainings per week", xlab="")
+
+# честота на трениране по пол
+> barplot(table(sports$gender, sports$training_frequency), col=c("#CC3399","#00CCCC"), beside = T, xlab = "Training days per week", ylab = "People")
+
+> legend("topright", legend = c("Female", "Male"), fill = c("#CC3399","#00CCCC"))
+
+# видове спорт по пол
+
+> barplot(table(valid_categories$gender, valid_categories$sport), col= c("#FF6699","#CCFF99"), beside = T, las = 2, ylab = "People")
+> legend("topright", c("Female", "Male"), fill = c("#FF6699","#CCFF99"))
